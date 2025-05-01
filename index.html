@@ -22,18 +22,11 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Set canvas to full screen
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Load background image
     const bg = new Image();
-    bg.src = "assets/background.jpg"; // Ensure this path is correct
-
-    // Load ship image (or use a rectangle for now)
-    // const shipImg = new Image();
-    // shipImg.src = "assets/ship.png"; // Optional if you have a ship image
-
+    bg.src = "assets/background.jpg";
     let ship = {
       x: canvas.width / 2 - 25,
       y: canvas.height - 100,
@@ -41,23 +34,16 @@
       height: 50
     };
 
-    // Draw function
     function draw() {
-      // Draw background only if image is loaded
       if (bg.complete) {
         ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
       } else {
-        // Fallback in case background isn't loaded yet
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      // Draw ship (rectangle version)
       ctx.fillStyle = "lime";
       ctx.fillRect(ship.x, ship.y, ship.width, ship.height);
-
-      // If using an image instead:
-      // ctx.drawImage(shipImg, ship.x, ship.y, ship.width, ship.height);
 
       requestAnimationFrame(draw);
     }
@@ -66,7 +52,6 @@
       draw();
     };
 
-    // Error handling if the image fails to load
     bg.onerror = () => {
       console.error("Error loading background image");
     };
