@@ -26,7 +26,8 @@
     canvas.height = window.innerHeight;
 
     const bg = new Image();
-    bg.src = "assets/background.jpg";
+    bg.src = "assets/background.jpg";  // Ensure this path is correct
+
     let ship = {
       x: canvas.width / 2 - 25,
       y: canvas.height - 100,
@@ -36,14 +37,14 @@
 
     function draw() {
       if (bg.complete) {
-        ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);  // Draw background image
       } else {
         ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);  // Fallback if image isn't loaded
       }
 
       ctx.fillStyle = "lime";
-      ctx.fillRect(ship.x, ship.y, ship.width, ship.height);
+      ctx.fillRect(ship.x, ship.y, ship.width, ship.height);  // Draw ship
 
       requestAnimationFrame(draw);
     }
