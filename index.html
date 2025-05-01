@@ -1,23 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Alien Ship vs Rocks</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alien Ship Game</title>
   <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+    }
     canvas {
       display: block;
-      background-color: black;
     }
   </style>
 </head>
 <body>
-  <canvas id="game" width="1920" height="919"></canvas>
+  <canvas id="gameCanvas"></canvas>
+
   <script>
-    const canvas = document.getElementById("game");
+    const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    let bg = new Image();
-    bg.src = "assets/background.jpg";
+    // Set canvas to full screen
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Load background image
+    const bg = new Image();
+    bg.src = "assets/background.jpg"; // Ensure this path is correct
+
+    // Load ship image (or use a rectangle for now)
+    // const shipImg = new Image();
+    // shipImg.src = "assets/ship.png"; // Optional if you have a ship image
 
     let ship = {
       x: canvas.width / 2 - 25,
@@ -26,81 +41,35 @@
       height: 50
     };
 
-    let rocks = [];
-    let lasers = [];
-    let score = 0;
+    // Draw function
+    function draw() {
+      // Draw background only if image is loaded
+      if (bg.complete) {
+        ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+      } else {
+        // Fallback in case background isn't loaded yet
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
 
-    function drawShip() {
+      // Draw ship (rectangle version)
       ctx.fillStyle = "lime";
       ctx.fillRect(ship.x, ship.y, ship.width, ship.height);
+
+      // If using an image instead:
+      // ctx.drawImage(shipImg, ship.x, ship.y, ship.width, ship.height);
+
+      requestAnimationFrame(draw);
     }
 
-    function drawRocks() {
-      ctx.fillStyle = "red";
-      rocks.forEach(rock => {
-        ctx.beginPath();
-        ctx.arc(rock.x, rock.y, rock.radius, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
+    bg.onload = () => {
+      draw();
+    };
 
-    function drawLasers() {
-      ctx.fillStyle = "yellow";
-      lasers.forEach(laser => {
-        ctx.fillRect(laser.x, laser.y, 5, 15);
-      });
-    }
-
-    function updateGame() {
-      ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
-
-      drawShip();
-      drawRocks();
-      drawLasers();
-
-      rocks.forEach(rock => rock.y += 2);
-      lasers.forEach(laser => laser.y -= 5);
-
-      // Collision
-      lasers.forEach((laser, lIndex) => {
-        rocks.forEach((rock, rIndex) => {
-          let dx = laser.x - rock.x;
-          let dy = laser.y - rock.y;
-          let distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < rock.radius) {
-            rocks.splice(rIndex, 1);
-            lasers.splice(lIndex, 1);
-            score += 10;
-          }
-        });
-      });
-
-      requestAnimationFrame(updateGame);
-    }
-
-    function spawnRock() {
-      rocks.push({
-        x: Math.random() * canvas.width,
-        y: -20,
-        radius: 20 + Math.random() * 10
-      });
-    }
-
-    function shootLaser() {
-      lasers.push({
-        x: ship.x + ship.width / 2,
-        y: ship.y
-      });
-    }
-
-    canvas.addEventListener("mousemove", e => {
-      const rect = canvas.getBoundingClientRect();
-      ship.x = e.clientX - rect.left - ship.width / 2;
-    });
-
-    setInterval(spawnRock, 1000);
-    setInterval(shootLaser, 300);
-    bg.onload = updateGame;
+    // Error handling if the image fails to load
+    bg.onerror = () => {
+      console.error("Error loading background image");
+    };
   </script>
 </body>
 </html>
